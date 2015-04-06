@@ -9,6 +9,7 @@ from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
 from django.utils.translation import ugettext as _
 from templated_email.utils import _get_node, BlockNotFound
+from templated_email import block_render
 
 
 class EmailMessageDTE(EmailMessage):
@@ -109,7 +110,7 @@ class TemplateBackend(object):
         if multi_part:
             for part in ['subject', 'html', 'plain']:
                 try:
-                    response[part] = _get_node(multi_part, render_context, name=part)
+                    response[part] = block_render.render_block_to_string(full_template_name, part, render_context).strip()
                 except BlockNotFound, error:
                     errors[part] = error
         else:
@@ -141,7 +142,7 @@ class TemplateBackend(object):
     def get_email_message(self, template_name, context, from_email=None, to=None,
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
-                          template_dir=None, file_extension=None, attach=None):
+                          template_dir=None, file_extension=None, attach=None, cls=None):
 
         parts = self._render_email(template_name, context,
                                    template_prefix or template_dir,
@@ -158,7 +159,8 @@ class TemplateBackend(object):
             subject = subject_template % context
 
         if plain_part and not html_part:
-            e = EmailMessageDTE(
+            cls = EmailMessageDTE if cls is None else cls
+            e = cls(
                 subject,
                 parts['plain'],
                 from_email,
@@ -169,7 +171,8 @@ class TemplateBackend(object):
             )
 
         if html_part and not plain_part:
-            e = EmailMessageDTE(
+            cls = EmailMessageDTE if cls is None else cls
+            e = cls(
                 subject,
                 parts['html'],
                 from_email,
@@ -181,7 +184,8 @@ class TemplateBackend(object):
             e.content_subtype = 'html'
 
         if plain_part and html_part:
-            e = EmailMultiAlternativesDTE(
+            cls = EmailMultiAlternativesDTE if cls is None else cls
+            e = cls(
                 subject,
                 parts['plain'],
                 from_email,
