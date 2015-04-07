@@ -140,7 +140,7 @@ class TemplateBackend(object):
         return response
 
     def get_email_message(self, template_name, context, from_email=None, to=None,
-                          cc=None, bcc=None, headers=None,
+                          cc=None, bcc=None, headers=None, connection=None,
                           template_prefix=None, template_suffix=None,
                           template_dir=None, file_extension=None, attach=None, cls=None):
 
@@ -165,6 +165,7 @@ class TemplateBackend(object):
                 parts['plain'],
                 from_email,
                 to,
+                connection=connection,
                 cc=cc,
                 bcc=bcc,
                 headers=headers,
@@ -177,6 +178,7 @@ class TemplateBackend(object):
                 parts['html'],
                 from_email,
                 to,
+                connection=connection,
                 cc=cc,
                 bcc=bcc,
                 headers=headers,
@@ -190,6 +192,7 @@ class TemplateBackend(object):
                 parts['plain'],
                 from_email,
                 to,
+                connection=connection,
                 cc=cc,
                 bcc=bcc,
                 headers=headers,
