@@ -42,7 +42,7 @@ def get_connection(backend=None, template_prefix=None, template_suffix=None,
 
 
 def get_templated_mail(template_name, context, from_email=None, to=None,
-                       cc=None, bcc=None, headers=None,
+                       cc=None, bcc=None, headers=None, connection=None,
                        template_prefix=None, template_suffix=None,
                        template_dir=None, file_extension=None, attach=None, cls=None):
     """Returns a templated EmailMessage instance without a connection using
@@ -56,7 +56,7 @@ def get_templated_mail(template_name, context, from_email=None, to=None,
                                        cc=cc, bcc=bcc, headers=headers,
                                        template_prefix=template_prefix,
                                        template_suffix=template_suffix,
-                                       cls=cls)
+                                       cls=cls, connection=connection)
 
 
 def send_templated_mail(template_name, from_email, recipient_list, context,
